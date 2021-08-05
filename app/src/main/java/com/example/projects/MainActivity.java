@@ -7,11 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
@@ -80,6 +84,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
+                progress.dismiss();
+                boolean connected;
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+                    //we are connected to a network
+                    connected = true;
+                } else {
+                    connected = false;
+                }
+
+                if (connected == false) {
+                    Toast.makeText(MainActivity.this, "The Internet connection failed, Check the Internet", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "--> Close the application and Open it time other", Toast.LENGTH_LONG).show();
+                }
                 Log.d(TAG, "--ERROR-->>"+e);
             }
 
