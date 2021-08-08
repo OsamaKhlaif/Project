@@ -2,7 +2,6 @@ package com.example.projects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,17 +11,14 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
-import com.example.projects.APITodo.ToDo;
 import com.example.projects.APITodo.Todos;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +46,7 @@ public class ToDosActivity extends AppCompatActivity {
     private int positionProjectClick = 0;
     private ProgressDialog progress;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +67,7 @@ public class ToDosActivity extends AppCompatActivity {
         parent_childBackIndex = new ArrayList<>();
 
         if (intent.getSerializableExtra("ChildToDo") == null) {
-            toDosNameParent = new ArrayList<>();
+
             findToDos();
         } else {
             toDosNameParent = (ArrayList<String>) (intent.getSerializableExtra("ChildToDo"));
@@ -82,7 +79,7 @@ public class ToDosActivity extends AppCompatActivity {
     }
 
     private void findToDos() {
-
+        toDosNameParent = new ArrayList<>();
         apiInterface = APIClient.getClient().create(APIInterface.class);
 
         Observable<Todos> apiCall = apiInterface.getToDos("to_dos_all")
@@ -100,7 +97,6 @@ public class ToDosActivity extends AppCompatActivity {
             public void onNext(Todos todos) {
                 //disable the progress bar.
                 progress.dismiss();
-
                 todo = todos;
                 Log.d(TAG, "--Success--");
                 for (int positionProject = 0; positionProject < todos.getToDosAll().size(); positionProject++) {
@@ -114,6 +110,8 @@ public class ToDosActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+
                 setAdapter();
             }
 
@@ -154,7 +152,6 @@ public class ToDosActivity extends AppCompatActivity {
     }
 
     private void findToDosChild(Todos todos, int positionProject, int positionToDoParentClick, List<Integer> toDosNameParentIndex) {
-
         toDosNameChild = new ArrayList<>();
         toDosNameChildIndex = new ArrayList<>();
         String idChild = todos.getToDosAll().get(positionProject).getToDo().get(toDosNameParentIndex.get(positionToDoParentClick)).getId();
@@ -178,7 +175,8 @@ public class ToDosActivity extends AppCompatActivity {
             intent.putExtra("Position Project", positionProject);
             startActivity(intent, optionsCompat.toBundle());
         } else {
-            Toast.makeText(this, "This todos not have any child todos", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(this, "This to-do not have any child to-dos", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -189,5 +187,6 @@ public class ToDosActivity extends AppCompatActivity {
         };
 
     }
+
 
 }

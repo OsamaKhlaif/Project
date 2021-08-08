@@ -16,9 +16,22 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/projects_recycler_view"
-        android:layout_width="411dp"
-        android:layout_height="675dp"
+        android:layout_width="match_parent"
+        android:layout_height="720dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_layout" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_refresh_24"
+        android:onClick="refreshProjects"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

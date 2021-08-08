@@ -50,15 +50,14 @@ public class MainActivity extends AppCompatActivity {
         progress.setMessage("Wait Projects loading...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
         progress.show();
-
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        projectsName = new ArrayList<>();
         findProjectName();
     }
 
     private void findProjectName() {
 
+        projectsName = new ArrayList<>();
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Observable<APIProject> apiCall = apiInterface.getProjects("projects")
                 .subscribeOn(Schedulers.io())
@@ -74,11 +73,12 @@ public class MainActivity extends AppCompatActivity {
             public void onNext(APIProject apiProjects) {
                 progress.dismiss();
                 Log.d(TAG, "--Success--");
-                for (int position = 0; position < apiProjects.getProjects().size(); position++){
+                for (int position = 0; position < apiProjects.getProjects().size(); position++) {
                     projectsName.add(apiProjects.getProjects().get(position).getName());
                 }
+                Log.d(">>>>2", "--" + projectsName);
                 setOnClickListener(apiProjects);
-                RecyclerAdapter adapter = new RecyclerAdapter(MainActivity.this,projectsName, listener);
+                RecyclerAdapter adapter = new RecyclerAdapter(MainActivity.this, projectsName, listener);
                 projectsRecyclerView.setAdapter(adapter);
             }
 
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this, "--> Close the application and Open it time other", Toast.LENGTH_LONG).show();
                 }
-                Log.d(TAG, "--ERROR-->>"+e);
+                Log.d(TAG, "--ERROR-->>" + e);
             }
 
             @Override
@@ -112,11 +112,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setOnClickListener(APIProject apiProject) {
+
         listener = (v, position) -> {
             Intent intent = new Intent(MainActivity.this, ToDosActivity.class);
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, projectsRecyclerView, "projectsRecyclerView");
-            intent.putExtra("ID",apiProject.getProjects().get(position).getId());
+            intent.putExtra("ID", apiProject.getProjects().get(position).getId());
             MainActivity.this.startActivity(intent, optionsCompat.toBundle());
         };
     }
+
+    public void refreshProjects(View view) {
+
+        progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait Projects loading...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+        findProjectName();
+    }
+
 }
