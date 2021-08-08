@@ -11,9 +11,9 @@ import retrofit2.http.Path;
 
 public interface APIInterface {
 
-    @GET("/api/{type}")
-    Observable<APIProject> getProjects(@Path("type") String type);
+    @GET("/api/{id}")
+    Observable<APIProject> getProjects(@Path("id") String id);
 
-    @GET("/api/{type}")
-    Observable<Todos> getToDos(@Path("type") String type);
+    @GET("/api/{id}")
+    Observable<Todos> getToDos(@Path("id") String id);
 }

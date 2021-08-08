@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Projects</string>
+    <string name="Loading">Loading</string>
+    <string name="textProjectLoading">Wait Projects Loading ...</string>
+    <string name="textTodosLoading">Wait Todos Loading ...</string>
+    <string name="internetConnectionMessage">The Internet connection failed, Check the Internet</string>
+    <string name="otherProblemMessage">--> Close the application and Open it time other.\n OR \n --> The Internet connection bad"</string>
 </resources>

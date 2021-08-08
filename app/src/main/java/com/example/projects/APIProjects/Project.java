@@ -9,24 +9,24 @@ import com.google.gson.annotations.SerializedName;
 public class Project {
 
     @SerializedName("id")
-    private String mId;
+    private String id;
     @SerializedName("name")
-    private String mName;
+    private String name;
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        mId = id;
+        this.id = id;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public void setName(String name) {
-        mName = name;
+        this.name = name;
     }
 
 }

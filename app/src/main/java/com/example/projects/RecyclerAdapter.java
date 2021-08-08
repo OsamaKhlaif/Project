@@ -13,12 +13,12 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHeaven> {
 
     private Context context;
-    private List<String> projectsName;
+    private List<String> projectsNameList;
     private RecyclerViewClickListener listener;
 
-    public RecyclerAdapter(Context context, List<String> projectsName, RecyclerViewClickListener listener) {
+    public RecyclerAdapter(Context context, List<String> projectsNameList, RecyclerViewClickListener listener) {
         this.context = context;
-        this.projectsName = projectsName;
+        this.projectsNameList = projectsNameList;
         this.listener = listener;
     }
 
@@ -31,12 +31,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHeaven> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHeaven holder, int position) {
-      holder.projectName.setText(projectsName.get(position));
+      holder.projectNameTextView.setText(projectsNameList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return projectsName.size();
+        return projectsNameList.size();
     }
 
     public interface RecyclerViewClickListener {

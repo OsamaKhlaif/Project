@@ -1,11 +1,7 @@
 
 package com.example.projects.APITodo;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
@@ -15,24 +11,24 @@ import com.google.gson.annotations.SerializedName;
 public class Todos implements Serializable{
 
     @SerializedName("id")
-    private String mId;
+    private String id;
     @SerializedName("to_dos_all")
-    private List<ToDosAll> mToDosAll;
+    private List<TodosAll> todosAll;
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        mId = id;
+        this.id = id;
     }
 
-    public List<ToDosAll> getToDosAll() {
-        return mToDosAll;
+    public List<TodosAll> getToDosAll() {
+        return todosAll;
     }
 
-    public void setToDosAll(List<ToDosAll> toDosAll) {
-        mToDosAll = toDosAll;
+    public void setToDosAll(List<TodosAll> toDosAll) {
+        todosAll = toDosAll;
     }
 
 

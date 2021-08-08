@@ -10,24 +10,24 @@ import com.google.gson.annotations.SerializedName;
 public class APIProject {
 
     @SerializedName("id")
-    private String mId;
+    private String id;
     @SerializedName("projects")
-    private List<Project> mProjects;
+    private List<Project> projects;
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        mId = id;
+        this.id = id;
     }
 
     public List<Project> getProjects() {
-        return mProjects;
+        return projects;
     }
 
     public void setProjects(List<Project> projects) {
-        mProjects = projects;
+        this.projects = projects;
     }
 
 }

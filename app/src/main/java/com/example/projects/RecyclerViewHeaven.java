@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewHeaven extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    TextView projectName;
+    TextView projectNameTextView;
     private RecyclerAdapter.RecyclerViewClickListener listener;
 
     public RecyclerViewHeaven(@NonNull  View itemView, RecyclerAdapter.RecyclerViewClickListener listener) {
         super(itemView);
-        projectName = itemView.findViewById(R.id.project_name_text_view);
+        projectNameTextView = itemView.findViewById(R.id.project_name_text_view);
         itemView.setOnClickListener(this);
         this.listener = listener;
     }

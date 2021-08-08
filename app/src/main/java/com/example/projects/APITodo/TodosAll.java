@@ -8,27 +8,27 @@ import com.google.gson.annotations.SerializedName;
 
 @Generated("net.hexar.json2pojo")
 @SuppressWarnings("unused")
-public class ToDosAll implements Serializable {
+public class TodosAll implements Serializable {
 
     @SerializedName("id")
-    private String mId;
+    private String id;
     @SerializedName("to_do")
-    private List<ToDo> mToDo;
+    private List<Todo> todo;
 
     public String getId() {
-        return mId;
+        return id;
     }
 
     public void setId(String id) {
-        mId = id;
+        this.id = id;
     }
 
-    public List<ToDo> getToDo() {
-        return mToDo;
+    public List<Todo> getToDo() {
+        return todo;
     }
 
-    public void setToDo(List<ToDo> toDo) {
-        mToDo = toDo;
+    public void setToDo(List<Todo> toDo) {
+        todo = toDo;
     }
 
 }

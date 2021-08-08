@@ -2,7 +2,6 @@ package com.example.projects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,12 +13,10 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
-import com.example.projects.APIProjects.APIProject;
 import com.example.projects.APIProjects.APIProject;
 
 import java.util.ArrayList;
@@ -33,23 +30,23 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView projectsRecyclerView;
     private APIInterface apiInterface;
-    private List<String> projectsName;
+    private List<String> projectsNameList;
     private RecyclerAdapter.RecyclerViewClickListener listener;
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private ProgressDialog progress;
+    private ProgressDialog loadingProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Wait Projects loading...");
-        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-        progress.show();
+        loadingProgressDialog = new ProgressDialog(this);
+        loadingProgressDialog.setTitle(R.string.Loading);
+        loadingProgressDialog.setMessage(getResources().getString(R.string.textProjectLoading));
+        loadingProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        loadingProgressDialog.show();
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         findProjectName();
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void findProjectName() {
 
-        projectsName = new ArrayList<>();
+        projectsNameList = new ArrayList<>();
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Observable<APIProject> apiCall = apiInterface.getProjects("projects")
                 .subscribeOn(Schedulers.io())
@@ -71,20 +68,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNext(APIProject apiProjects) {
-                progress.dismiss();
+                loadingProgressDialog.dismiss();
                 Log.d(TAG, "--Success--");
                 for (int position = 0; position < apiProjects.getProjects().size(); position++) {
-                    projectsName.add(apiProjects.getProjects().get(position).getName());
+                    projectsNameList.add(apiProjects.getProjects().get(position).getName());
                 }
-                Log.d(">>>>2", "--" + projectsName);
+
                 setOnClickListener(apiProjects);
-                RecyclerAdapter adapter = new RecyclerAdapter(MainActivity.this, projectsName, listener);
+                RecyclerAdapter adapter = new RecyclerAdapter(MainActivity.this, projectsNameList, listener);
                 projectsRecyclerView.setAdapter(adapter);
             }
 
             @Override
             public void onError(Throwable e) {
-                progress.dismiss();
+                loadingProgressDialog.dismiss();
                 boolean connected;
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -96,16 +93,16 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (connected == false) {
-                    Toast.makeText(MainActivity.this, "The Internet connection failed, Check the Internet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "--> Close the application and Open it time other", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.otherProblemMessage, Toast.LENGTH_LONG).show();
                 }
                 Log.d(TAG, "--ERROR-->>" + e);
             }
 
             @Override
             public void onComplete() {
-                Log.d("Main Activity", "Finish the Process");
+                Log.d(TAG, "Finish the Process");
             }
         });
 
@@ -114,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     private void setOnClickListener(APIProject apiProject) {
 
         listener = (v, position) -> {
-            Intent intent = new Intent(MainActivity.this, ToDosActivity.class);
+            Intent intent = new Intent(MainActivity.this, TodosActivity.class);
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, projectsRecyclerView, "projectsRecyclerView");
             intent.putExtra("ID", apiProject.getProjects().get(position).getId());
             MainActivity.this.startActivity(intent, optionsCompat.toBundle());
@@ -123,11 +120,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshProjects(View view) {
 
-        progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Wait Projects loading...");
-        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-        progress.show();
+        loadingProgressDialog = new ProgressDialog(this);
+        loadingProgressDialog.setTitle(R.string.Loading);
+        loadingProgressDialog.setMessage(getResources().getString(R.string.textProjectLoading));
+        loadingProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        loadingProgressDialog.show();
         findProjectName();
     }
 
