@@ -27,11 +27,20 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
+<<<<<<< HEAD
         android:onClick="refreshProjects"
         android:src="@drawable/ic_baseline_refresh_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="UsingOnClickInXml" />
+=======
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_refresh_24"
+        android:onClick="refreshProjects"
+        />
+
+>>>>>>> cb4abb0 (Slove the problems.)
 
 
 
