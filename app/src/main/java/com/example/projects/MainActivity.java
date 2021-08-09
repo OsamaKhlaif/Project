@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
 import com.example.projects.APIProjects.APIProject;
+import com.example.projects.APIProjects.Project;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -45,10 +47,12 @@ public class MainActivity extends AppCompatActivity {
         loadingProgressDialog = new ProgressDialog(this);
         loadingProgressDialog.setTitle(R.string.Loading);
         loadingProgressDialog.setMessage(getResources().getString(R.string.textProjectLoading));
-        loadingProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        // disable dismiss by tapping outside of the dialog
+        loadingProgressDialog.setCancelable(false);
         loadingProgressDialog.show();
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
-        projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
         findProjectName();
     }
 
@@ -62,16 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
         apiCall.subscribe(new Observer<APIProject>() {
             @Override
-            public void onSubscribe(Disposable d) {
+            public void onSubscribe(@NonNull Disposable d) {
                 Log.d(TAG, "Start the subscribe");
             }
 
             @Override
-            public void onNext(APIProject apiProjects) {
+            public void onNext(@NonNull APIProject apiProjects) {
                 loadingProgressDialog.dismiss();
                 Log.d(TAG, "--Success--");
-                for (int position = 0; position < apiProjects.getProjects().size(); position++) {
-                    projectsNameList.add(apiProjects.getProjects().get(position).getName());
+                for (Project project : apiProjects.getProjects()) {
+                    projectsNameList.add(project.getName());
                 }
 
                 setOnClickListener(apiProjects);
@@ -80,22 +84,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(@NonNull Throwable e) {
                 loadingProgressDialog.dismiss();
                 boolean connected;
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-                    //we are connected to a network
-                    connected = true;
-                } else {
-                    connected = false;
-                }
+                //we are connected to a network
+                connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
 
-                if (connected == false) {
+                if (!connected) {
                     Toast.makeText(MainActivity.this, R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.otherProblemMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, " "+e, Toast.LENGTH_LONG).show();
                 }
                 Log.d(TAG, "--ERROR-->>" + e);
             }

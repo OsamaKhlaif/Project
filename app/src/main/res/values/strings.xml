@@ -4,5 +4,5 @@
     <string name="textProjectLoading">Wait Projects Loading ...</string>
     <string name="textTodosLoading">Wait Todos Loading ...</string>
     <string name="internetConnectionMessage">The Internet connection failed, Check the Internet</string>
-    <string name="otherProblemMessage">--> Close the application and Open it time other.\n OR \n --> The Internet connection bad"</string>
+    <string name="nonTodos">The Project not have any to-dos</string>
 </resources>

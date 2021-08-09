@@ -6,9 +6,10 @@ import android.os.Parcelable;
 
 import com.example.projects.APITodo.Todos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TodoChildAttributes implements Parcelable {
+public class TodoChildAttributes implements Serializable {
 
     private ArrayList<String> todosChildNameList;
     private ArrayList<Integer> todosChildIndexList;
@@ -21,23 +22,6 @@ public class TodoChildAttributes implements Parcelable {
         this.todos = todos;
         this.positionProjects = positionProjects;
     }
-
-    protected TodoChildAttributes(Parcel in) {
-        todosChildNameList = in.createStringArrayList();
-        positionProjects = in.readInt();
-    }
-
-    public static final Creator<TodoChildAttributes> CREATOR = new Creator<TodoChildAttributes>() {
-        @Override
-        public TodoChildAttributes createFromParcel(Parcel in) {
-            return new TodoChildAttributes(in);
-        }
-
-        @Override
-        public TodoChildAttributes[] newArray(int size) {
-            return new TodoChildAttributes[size];
-        }
-    };
 
     public ArrayList<String> getTodosChildNameList() {
         return todosChildNameList;
@@ -71,14 +55,4 @@ public class TodoChildAttributes implements Parcelable {
         this.positionProjects = positionProjects;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(todosChildNameList);
-        dest.writeInt(positionProjects);
-    }
 }
