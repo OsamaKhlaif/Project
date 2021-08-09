@@ -60,20 +60,20 @@ public class MainActivity extends AppCompatActivity {
 
         projectsNameList = new ArrayList<>();
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Observable<APIProject> apiCall = apiInterface.getProjects("projects")
+        Observable<APIProject> apiCall = apiInterface.getProjects(Constants.ID_PROJECT_LINK)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
         apiCall.subscribe(new Observer<APIProject>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
-                Log.d(TAG, "Start the subscribe");
+                Log.d(TAG, Constants.ON_SUBSCRIBE);
             }
 
             @Override
             public void onNext(@NonNull APIProject apiProjects) {
+                Log.d(TAG, Constants.ON_NEXT);
                 loadingProgressDialog.dismiss();
-                Log.d(TAG, "--Success--");
                 for (Project project : apiProjects.getProjects()) {
                     projectsNameList.add(project.getName());
                 }
@@ -93,16 +93,16 @@ public class MainActivity extends AppCompatActivity {
                         connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
 
                 if (!connected) {
-                    Toast.makeText(MainActivity.this, R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, " " + e, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + e, Toast.LENGTH_LONG).show();
                 }
-                Log.d(TAG, "--ERROR-->>" + e);
+                Log.d(TAG, Constants.ON_ERROR + e);
             }
 
             @Override
             public void onComplete() {
-                Log.d(TAG, "Finish the Process");
+                Log.d(TAG, Constants.ON_COMPLETE);
             }
         });
 
@@ -112,8 +112,10 @@ public class MainActivity extends AppCompatActivity {
 
         listener = (v, position) -> {
             Intent intent = new Intent(MainActivity.this, TodosActivity.class);
-            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, projectsRecyclerView, "projectsRecyclerView");
-            intent.putExtra("ID", apiProject.getProjects().get(position).getId());
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(MainActivity.this, projectsRecyclerView,
+                            Constants.PROJECTS_RECYCLER_VIEW);
+            intent.putExtra(Constants.ID_PROJECT, apiProject.getProjects().get(position).getId());
             MainActivity.this.startActivity(intent, optionsCompat.toBundle());
         };
     }
@@ -123,7 +125,8 @@ public class MainActivity extends AppCompatActivity {
         loadingProgressDialog = new ProgressDialog(this);
         loadingProgressDialog.setTitle(R.string.Loading);
         loadingProgressDialog.setMessage(getResources().getString(R.string.textProjectLoading));
-        loadingProgressDialog.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        // disable dismiss by tapping outside of the dialog
+        loadingProgressDialog.setCancelable(false);
         loadingProgressDialog.show();
         findProjectName();
     }

@@ -60,16 +60,16 @@ public class TodosActivity extends AppCompatActivity {
         loadingProgressDialog.show();
 
         Intent intent = getIntent();
-        idProject = intent.getStringExtra("ID");
+        idProject = intent.getStringExtra(Constants.ID_PROJECT);
         todosRecyclerView = findViewById(R.id.to_dos_recycler_view);
         todosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         todosParentIndexList = new ArrayList<>();
 
-        if (intent.getSerializableExtra("Todo Child Attributes") == null) {
+        if (intent.getSerializableExtra(Constants.TODO_CHILD_ATTRIBUTES_REFERENCE) == null) {
             findToDos();
 
         } else {
-            todoChildAttributes = (TodoChildAttributes) intent.getSerializableExtra("Todo Child Attributes");
+            todoChildAttributes = (TodoChildAttributes) intent.getSerializableExtra(Constants.TODO_CHILD_ATTRIBUTES_REFERENCE);
             todosParentNameList = todoChildAttributes.getTodosChildNameList();
             todosParentIndexList = todoChildAttributes.getTodosChildIndexList();
             todo = todoChildAttributes.getTodos();
@@ -84,7 +84,7 @@ public class TodosActivity extends AppCompatActivity {
         todosParentNameList = new ArrayList<>();
         apiInterface = APIClient.getClient().create(APIInterface.class);
 
-        Observable<Todos> apiCall = apiInterface.getToDos("to_dos_all")
+        Observable<Todos> apiCall = apiInterface.getToDos(Constants.ID_TO_DOS_ALL_LINK)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
@@ -92,12 +92,12 @@ public class TodosActivity extends AppCompatActivity {
 
             @Override
             public void onSubscribe(@NonNull Disposable d) {
-                Log.d(TAG, "Start the subscribe");
+                Log.d(TAG, Constants.ON_SUBSCRIBE);
             }
 
             @Override
             public void onNext(@NonNull Todos todos) {
-                Log.d(TAG, "--Success--");
+                Log.d(TAG, Constants.ON_NEXT);
                 //disable the progress bar.
                 loadingProgressDialog.dismiss();
                 todo = todos;
@@ -106,7 +106,7 @@ public class TodosActivity extends AppCompatActivity {
                     int position = 0;
                     for (Todo todo : todosAll.getToDo()) {
                         if (todosAll.getId().equals(idProject)
-                                && todo.getParent().equals("0")) {
+                                && todo.getParent().equals(Constants.TODO_PARENT)) {
                             todosParentNameList.add(todo.getName());
                             todosParentIndexList.add(position);
                             positionProjectClicked = positionProject;
@@ -128,16 +128,16 @@ public class TodosActivity extends AppCompatActivity {
                         connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
 
                 if (!connected) {
-                    Toast.makeText(TodosActivity.this, R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TodosActivity.this, getResources().getString(R.string.error) + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(TodosActivity.this, " " + e, Toast.LENGTH_LONG).show();
+                    Toast.makeText(TodosActivity.this, getResources().getString(R.string.error) + e, Toast.LENGTH_LONG).show();
                 }
-                Log.d(TAG, "--ERROR-->>: " + e);
+                Log.d(TAG, Constants.ON_ERROR + e);
             }
 
             @Override
             public void onComplete() {
-                Log.d(TAG, "Finish the Process");
+                Log.d(TAG, Constants.ON_COMPLETE);
             }
         });
     }
@@ -151,9 +151,9 @@ public class TodosActivity extends AppCompatActivity {
             todosRecyclerView.setAdapter(adapter);
         } else {
             Intent intent = new Intent(this, MainActivity.class);
-            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(TodosActivity.this, todosRecyclerView, "toDosRecyclerView");
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(TodosActivity.this, todosRecyclerView, Constants.TODOS_RECYCLER_VIEW);
             startActivity(intent, optionsCompat.toBundle());
-            Toast.makeText(this, R.string.nonTodos, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.projectNonTodos, Toast.LENGTH_LONG).show();
         }
 
     }
@@ -176,11 +176,11 @@ public class TodosActivity extends AppCompatActivity {
             Intent intent = new Intent(TodosActivity.this, TodosActivity.class);
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(TodosActivity.this, todosRecyclerView, "toDosRecyclerView");
             todoChildAttributes = new TodoChildAttributes(todosChildNameList, todosChildIndexList, todo, positionProject);
-            intent.putExtra("Todo Child Attributes", todoChildAttributes);
+            intent.putExtra(Constants.TODO_CHILD_ATTRIBUTES_REFERENCE, todoChildAttributes);
             startActivity(intent, optionsCompat.toBundle());
         } else {
 
-            Toast.makeText(this, "This to-do not have any child to-dos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.todoNonChildTodos), Toast.LENGTH_LONG).show();
         }
     }
 

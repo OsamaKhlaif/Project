@@ -4,6 +4,9 @@
     <string name="textProjectLoading">Wait Projects Loading ...</string>
     <string name="textTodosLoading">Wait Todos Loading ...</string>
     <string name="internetConnectionMessage">The Internet connection failed, Check the Internet</string>
-    <string name="nonTodos">The Project not have any to-dos</string>
+    <string name="projectNonTodos">"The Project haven't any todos"</string>
     <string name="to_do">To Dos</string>
+    <string name="error">Error: </string>
+    <string name="todoNonChildTodos">"This todo haven't any child todos"</string>
+
 </resources>
