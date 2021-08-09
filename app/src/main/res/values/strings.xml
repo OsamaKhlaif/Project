@@ -5,4 +5,5 @@
     <string name="textTodosLoading">Wait Todos Loading ...</string>
     <string name="internetConnectionMessage">The Internet connection failed, Check the Internet</string>
     <string name="nonTodos">The Project not have any to-dos</string>
+    <string name="to_do">To Dos</string>
 </resources>

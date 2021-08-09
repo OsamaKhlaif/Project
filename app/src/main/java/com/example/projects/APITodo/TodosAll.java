@@ -3,7 +3,9 @@ package com.example.projects.APITodo;
 
 import java.io.Serializable;
 import java.util.List;
+
 import javax.annotation.Generated;
+
 import com.google.gson.annotations.SerializedName;
 
 @Generated("net.hexar.json2pojo")

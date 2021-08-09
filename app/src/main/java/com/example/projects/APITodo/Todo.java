@@ -2,6 +2,7 @@
 package com.example.projects.APITodo;
 
 import javax.annotation.Generated;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;

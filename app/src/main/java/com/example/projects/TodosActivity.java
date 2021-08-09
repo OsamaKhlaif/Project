@@ -190,5 +190,4 @@ public class TodosActivity extends AppCompatActivity {
 
     }
 
-
 }

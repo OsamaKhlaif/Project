@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
 
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
@@ -14,7 +13,7 @@
         android:background="@color/teal_200"
         android:gravity="center_horizontal"
         android:padding="13dp"
-        android:text="To Dos"
+        android:text="@string/to_do"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"

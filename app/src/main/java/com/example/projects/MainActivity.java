@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!connected) {
                     Toast.makeText(MainActivity.this, R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, " "+e, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, " " + e, Toast.LENGTH_LONG).show();
                 }
                 Log.d(TAG, "--ERROR-->>" + e);
             }

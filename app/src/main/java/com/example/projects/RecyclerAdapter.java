@@ -24,14 +24,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerViewHeaven> {
 
     @NonNull
     @Override
-    public RecyclerViewHeaven onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_view,parent,false);
+    public RecyclerViewHeaven onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_view, parent, false);
         return new RecyclerViewHeaven(view, listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHeaven holder, int position) {
-      holder.projectNameTextView.setText(projectsNameList.get(position));
+        holder.projectNameTextView.setText(projectsNameList.get(position));
     }
 
     @Override
