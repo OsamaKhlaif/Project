@@ -37,10 +37,10 @@ public class TodosActivity extends AppCompatActivity {
     private int positionProjectClicked = 0;
     private RecyclerView todosRecyclerView;
     private APIInterface apiInterface;
-    private ArrayList<String> todosParentNameList;
+    private List<String> todosParentNameList;
     private List<Integer> todosParentIndexList;
-    private ArrayList<String> todosChildNameList;
-    private ArrayList<Integer> todosChildIndexList;
+    private List<String> todosChildNameList;
+    private List<Integer> todosChildIndexList;
     private String idProject;
     private RecyclerAdapter.RecyclerViewClickListener listener;
     private Todos todo;

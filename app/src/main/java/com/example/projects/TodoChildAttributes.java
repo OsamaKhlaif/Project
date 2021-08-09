@@ -8,22 +8,23 @@ import com.example.projects.APITodo.Todos;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoChildAttributes implements Serializable {
 
-    private ArrayList<String> todosChildNameList;
-    private ArrayList<Integer> todosChildIndexList;
+    private List<String> todosChildNameList;
+    private List<Integer> todosChildIndexList;
     private Todos todos;
     private int positionProjects;
 
-    public TodoChildAttributes(ArrayList<String> todosChildNameList, ArrayList<Integer> todosChildIndexList, Todos todos, int positionProjects) {
+    public TodoChildAttributes(List<String> todosChildNameList, List<Integer> todosChildIndexList, Todos todos, int positionProjects) {
         this.todosChildNameList = todosChildNameList;
         this.todosChildIndexList = todosChildIndexList;
         this.todos = todos;
         this.positionProjects = positionProjects;
     }
 
-    public ArrayList<String> getTodosChildNameList() {
+    public List<String> getTodosChildNameList() {
         return todosChildNameList;
     }
 
@@ -31,7 +32,7 @@ public class TodoChildAttributes implements Serializable {
         this.todosChildNameList = todosChildNameList;
     }
 
-    public ArrayList<Integer> getTodosChildIndexList() {
+    public List<Integer> getTodosChildIndexList() {
         return todosChildIndexList;
     }
 
