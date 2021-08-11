@@ -4,7 +4,7 @@ import android.content.pm.PackageInstaller;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.projects.APITodo.Todos;
+import com.example.projects.APIProjects.Todo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,10 +14,10 @@ public class TodoChildAttributes implements Serializable {
 
     private List<String> todosChildNameList;
     private List<Integer> todosChildIndexList;
-    private Todos todos;
+    private List<Todo> todos;
     private int positionProjects;
 
-    public TodoChildAttributes(List<String> todosChildNameList, List<Integer> todosChildIndexList, Todos todos, int positionProjects) {
+    public TodoChildAttributes(List<String> todosChildNameList, List<Integer> todosChildIndexList, List<Todo> todos, int positionProjects) {
         this.todosChildNameList = todosChildNameList;
         this.todosChildIndexList = todosChildIndexList;
         this.todos = todos;
@@ -40,11 +40,11 @@ public class TodoChildAttributes implements Serializable {
         this.todosChildIndexList = todosChildIndexList;
     }
 
-    public Todos getTodos() {
+    public List<Todo> getTodos() {
         return todos;
     }
 
-    public void setTodos(Todos todos) {
+    public void setTodos(List<Todo> todos) {
         this.todos = todos;
     }
 

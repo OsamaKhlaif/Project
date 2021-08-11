@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
-import com.example.projects.APIProjects.APIProject;
+
 import com.example.projects.APIProjects.Project;
 
 import java.util.ArrayList;
@@ -60,25 +60,26 @@ public class MainActivity extends AppCompatActivity {
 
         projectsNameList = new ArrayList<>();
         apiInterface = APIClient.getClient().create(APIInterface.class);
-        Observable<APIProject> apiCall = apiInterface.getProjects(Constants.ID_PROJECT_LINK)
+        Observable<List<Project>> apiCall = apiInterface.getProjects(Constants.ID_PROJECT_LINK)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
-        apiCall.subscribe(new Observer<APIProject>() {
+
+        apiCall.subscribe(new Observer<List<Project>>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 Log.d(TAG, Constants.ON_SUBSCRIBE);
             }
 
             @Override
-            public void onNext(@NonNull APIProject apiProjects) {
+            public void onNext(@NonNull List<Project> projects) {
                 Log.d(TAG, Constants.ON_NEXT);
                 loadingProgressDialog.dismiss();
-                for (Project project : apiProjects.getProjects()) {
+                for (Project project : projects) {
                     projectsNameList.add(project.getName());
                 }
 
-                setOnClickListener(apiProjects);
+                setOnClickListener(projects);
                 RecyclerAdapter adapter = new RecyclerAdapter(MainActivity.this, projectsNameList, listener);
                 projectsRecyclerView.setAdapter(adapter);
             }
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!connected) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + e, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 Log.d(TAG, Constants.ON_ERROR + e);
             }
@@ -108,14 +109,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setOnClickListener(APIProject apiProject) {
+    private void setOnClickListener(List<Project> projects) {
 
         listener = (v, position) -> {
             Intent intent = new Intent(MainActivity.this, TodosActivity.class);
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(MainActivity.this, projectsRecyclerView,
                             Constants.PROJECTS_RECYCLER_VIEW);
-            intent.putExtra(Constants.ID_PROJECT, apiProject.getProjects().get(position).getId());
+            intent.putExtra(Constants.ID_PROJECT, projects.get(position).getId());
             MainActivity.this.startActivity(intent, optionsCompat.toBundle());
         };
     }

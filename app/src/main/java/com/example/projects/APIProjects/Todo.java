@@ -1,8 +1,7 @@
 
-package com.example.projects.APITodo;
+package com.example.projects.APIProjects;
 
 import javax.annotation.Generated;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -17,6 +16,8 @@ public class Todo implements Serializable {
     private String name;
     @SerializedName("parent")
     private String parent;
+    @SerializedName("project_id")
+    private String projectId;
 
     public String getId() {
         return id;
@@ -40,6 +41,14 @@ public class Todo implements Serializable {
 
     public void setParent(String parent) {
         this.parent = parent;
+    }
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String parentId) {
+        projectId = parentId;
     }
 
 }
