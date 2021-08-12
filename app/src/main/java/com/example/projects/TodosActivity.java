@@ -1,10 +1,5 @@
 package com.example.projects;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,14 +9,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
-import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -33,7 +31,6 @@ import io.reactivex.schedulers.Schedulers;
 public class TodosActivity extends AppCompatActivity {
 
     private static final String TAG = TodosActivity.class.getSimpleName();
-    private int positionProjectClicked = 0;
     private RecyclerView todosRecyclerView;
     private APIInterface apiInterface;
     private List<String> todosParentNameList;
@@ -72,7 +69,6 @@ public class TodosActivity extends AppCompatActivity {
             todosParentNameList = todoChildAttributes.getTodosChildNameList();
             todoList = todoChildAttributes.getTodos();
             todosParentIndexList = todoChildAttributes.getTodosChildIndexList();
-            positionProjectClicked = todoChildAttributes.getPositionProjects();
             setAdapter();
 
         }
@@ -141,7 +137,7 @@ public class TodosActivity extends AppCompatActivity {
         loadingProgressDialog.dismiss();
 
         if (!todosParentNameList.isEmpty()) {
-            setOnClickListener(todoList, positionProjectClicked, todosParentIndexList);
+            setOnClickListener(todoList, todosParentIndexList);
             RecyclerAdapter adapter = new RecyclerAdapter(TodosActivity.this, todosParentNameList, listener);
             todosRecyclerView.setAdapter(adapter);
         } else {
@@ -153,7 +149,7 @@ public class TodosActivity extends AppCompatActivity {
 
     }
 
-    private void findToDosChild(List<Todo> todos, int positionProject, int positionToDoParentClick, List<Integer> toDosNameParentIndex) {
+    private void findToDosChild(List<Todo> todos, int positionToDoParentClick, List<Integer> toDosNameParentIndex) {
         todosChildNameList = new ArrayList<>();
         todosChildIndexList = new ArrayList<>();
         String idChild = todos.get(toDosNameParentIndex.get(positionToDoParentClick)).getId();
@@ -170,7 +166,7 @@ public class TodosActivity extends AppCompatActivity {
         if (!todosChildNameList.isEmpty()) {
             Intent intent = new Intent(TodosActivity.this, TodosActivity.class);
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(TodosActivity.this, todosRecyclerView, "toDosRecyclerView");
-            todoChildAttributes = new TodoChildAttributes(todosChildNameList, todosChildIndexList, todos, positionProject);
+            todoChildAttributes = new TodoChildAttributes(todosChildNameList, todosChildIndexList, todos);
             intent.putExtra(Constants.TODO_CHILD_ATTRIBUTES_REFERENCE, todoChildAttributes);
             startActivity(intent, optionsCompat.toBundle());
         } else {
@@ -179,9 +175,9 @@ public class TodosActivity extends AppCompatActivity {
         }
     }
 
-    private void setOnClickListener(List<Todo> todos, int positionProject, List<Integer> toDosNameParentIndex) {
+    private void setOnClickListener(List<Todo> todos, List<Integer> toDosNameParentIndex) {
 
-        listener = (v, position) -> findToDosChild(todos, positionProject, position, toDosNameParentIndex);
+        listener = (v, position) -> findToDosChild(todos, position, toDosNameParentIndex);
 
     }
 

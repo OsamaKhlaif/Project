@@ -15,13 +15,11 @@ public class TodoChildAttributes implements Serializable {
     private List<String> todosChildNameList;
     private List<Integer> todosChildIndexList;
     private List<Todo> todos;
-    private int positionProjects;
 
-    public TodoChildAttributes(List<String> todosChildNameList, List<Integer> todosChildIndexList, List<Todo> todos, int positionProjects) {
+    public TodoChildAttributes(List<String> todosChildNameList, List<Integer> todosChildIndexList, List<Todo> todos) {
         this.todosChildNameList = todosChildNameList;
         this.todosChildIndexList = todosChildIndexList;
         this.todos = todos;
-        this.positionProjects = positionProjects;
     }
 
     public List<String> getTodosChildNameList() {
@@ -46,14 +44,6 @@ public class TodoChildAttributes implements Serializable {
 
     public void setTodos(List<Todo> todos) {
         this.todos = todos;
-    }
-
-    public int getPositionProjects() {
-        return positionProjects;
-    }
-
-    public void setPositionProjects(int positionProjects) {
-        this.positionProjects = positionProjects;
     }
 
 }

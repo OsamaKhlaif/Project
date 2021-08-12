@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-        public static Retrofit getClient() {
+    public static Retrofit getClient() {
 
         return new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)

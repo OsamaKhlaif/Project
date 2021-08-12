@@ -1,7 +1,5 @@
 package com.example.projects.API;
 
-
-
 import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
 
@@ -11,7 +9,6 @@ import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-
 public interface APIInterface {
 
     @GET("/{id}")
@@ -19,7 +16,5 @@ public interface APIInterface {
 
     @GET("/{id}")
     Observable<List<Todo>> getTodos(@Path("id") String id);
-
-
 
 }

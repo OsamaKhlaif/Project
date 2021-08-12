@@ -6,7 +6,7 @@ public class Constants {
     public static final String ID_TO_DOS_ALL_LINK = "todo";
     public static final String ID_PROJECT = "idProject";
     public static final String TODO_CHILD_ATTRIBUTES_REFERENCE = "TodoChildAttributes";
-    public static final String BASE_URL = "https://490c58696bcc.ngrok.io";
+    public static final String BASE_URL = "https://eae8f09b1670.ngrok.io";
     public static final String ON_SUBSCRIBE = "Start the subscribe";
     public static final String ON_COMPLETE = "Finish the Process";
     public static final String ON_ERROR = "ERROR: ";
