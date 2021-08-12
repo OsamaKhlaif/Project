@@ -7,17 +7,22 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
+import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
+import com.example.projects.TodosRecyclerView.TodoAdapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,16 +37,19 @@ public class TodosActivity extends AppCompatActivity {
 
     private static final String TAG = TodosActivity.class.getSimpleName();
     private RecyclerView todosRecyclerView;
+    private TextView titleTodosActivityTextView;
     private APIInterface apiInterface;
     private List<String> todosParentNameList;
     private List<Integer> todosParentIndexList;
     private List<String> todosChildNameList;
     private List<Integer> todosChildIndexList;
-    private String idProject;
-    private RecyclerAdapter.RecyclerViewClickListener listener;
+    private Project project;
+    private TodoAdapter.RecyclerViewClickListener listener;
     private ProgressDialog loadingProgressDialog;
-    private TodoChildAttributes todoChildAttributes;
     private List<Todo> todoList;
+    private TodosData todosData;
+    private Intent intent;
+    private TodosAttributes todosAttributes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,24 +62,27 @@ public class TodosActivity extends AppCompatActivity {
         // disable dismiss by tapping outside of the dialog
         loadingProgressDialog.setCancelable(false);
         loadingProgressDialog.show();
+        todoList = new ArrayList<>();
 
-        Intent intent = getIntent();
-        idProject = intent.getStringExtra(Constants.ID_PROJECT);
+        intent = getIntent();
+        project = (Project) intent.getSerializableExtra(Constants.PROJECT);
         todosRecyclerView = findViewById(R.id.to_dos_recycler_view);
+        titleTodosActivityTextView = findViewById(R.id.title_todos_text_view);
         todosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         todosParentIndexList = new ArrayList<>();
 
-        if (intent.getSerializableExtra(Constants.TODO_CHILD_ATTRIBUTES_REFERENCE) == null) {
+        if (intent.getSerializableExtra(Constants.TODOS_ACTIVITY) == null) {
             findToDos();
-
+            titleTodosActivityTextView.setText(project.getName());
         } else {
-            todoChildAttributes = (TodoChildAttributes) intent.getSerializableExtra(Constants.TODO_CHILD_ATTRIBUTES_REFERENCE);
-            todosParentNameList = todoChildAttributes.getTodosChildNameList();
-            todoList = todoChildAttributes.getTodos();
-            todosParentIndexList = todoChildAttributes.getTodosChildIndexList();
-            setAdapter();
-
+            todosRecyclerView.removeAllViews();
+            todosAttributes = (TodosAttributes) intent.getSerializableExtra(Constants.TODOS_ACTIVITY);
+            todosData = todosAttributes.getTodosData();
+            setAdapter(todosAttributes.getTodosParentData());
+            project = todosAttributes.getProject();
+            titleTodosActivityTextView.setText(project.getName());
         }
+
     }
 
     private void findToDos() {
@@ -93,20 +104,11 @@ public class TodosActivity extends AppCompatActivity {
             @Override
             public void onNext(@NonNull List<Todo> todos) {
                 Log.d(TAG, Constants.ON_NEXT);
-                todoList = todos;
                 //disable the progress bar.
                 loadingProgressDialog.dismiss();
-
-                int position = 0;
-                for (Todo todo : todos) {
-                    if (todo.getProjectId().equals(idProject)
-                            && todo.getParent().equals(Constants.TODO_PARENT)) {
-                        todosParentNameList.add(todo.getName());
-                        todosParentIndexList.add(position);
-                    }
-                    position++;
-                }
-                setAdapter();
+                todosData = new TodosData(todos);
+                todoList = todosData.getParentTodos(project);
+                setAdapter(todoList);
             }
 
             @Override
@@ -133,12 +135,12 @@ public class TodosActivity extends AppCompatActivity {
         });
     }
 
-    public void setAdapter() {
+    public void setAdapter(List<Todo> todosParentData) {
         loadingProgressDialog.dismiss();
 
-        if (!todosParentNameList.isEmpty()) {
-            setOnClickListener(todoList, todosParentIndexList);
-            RecyclerAdapter adapter = new RecyclerAdapter(TodosActivity.this, todosParentNameList, listener);
+        if (!todosParentData.isEmpty()) {
+            setOnClickListener(todosParentData);
+            TodoAdapter adapter = new TodoAdapter(TodosActivity.this, todosParentData, listener);
             todosRecyclerView.setAdapter(adapter);
         } else {
             Intent intent = new Intent(this, MainActivity.class);
@@ -149,35 +151,25 @@ public class TodosActivity extends AppCompatActivity {
 
     }
 
-    private void findToDosChild(List<Todo> todos, int positionToDoParentClick, List<Integer> toDosNameParentIndex) {
-        todosChildNameList = new ArrayList<>();
-        todosChildIndexList = new ArrayList<>();
-        String idChild = todos.get(toDosNameParentIndex.get(positionToDoParentClick)).getId();
-        int position = 0;
-        for (Todo todo : todos) {
+    private void findToDosChild(List<Todo> todosParentData, int position) {
+        todosParentData = todosData.getChildTodos(todosParentData.get(position));
 
-            if (todo.getParent().equals(idChild)) {
-                todosChildNameList.add(todo.getName());
-                todosChildIndexList.add(position);
-            }
-            position++;
-        }
-
-        if (!todosChildNameList.isEmpty()) {
+        if (!todosParentData.isEmpty()) {
             Intent intent = new Intent(TodosActivity.this, TodosActivity.class);
-            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(TodosActivity.this, todosRecyclerView, "toDosRecyclerView");
-            todoChildAttributes = new TodoChildAttributes(todosChildNameList, todosChildIndexList, todos);
-            intent.putExtra(Constants.TODO_CHILD_ATTRIBUTES_REFERENCE, todoChildAttributes);
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(TodosActivity.this, todosRecyclerView, Constants.TODOS_RECYCLER_VIEW);
+            todosAttributes = new TodosAttributes(project, todosParentData, todosData);
+            intent.putExtra(Constants.TODOS_ACTIVITY, todosAttributes);
             startActivity(intent, optionsCompat.toBundle());
         } else {
-
-            Toast.makeText(this, getResources().getString(R.string.todoNonChildTodos), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getString(R.string.todoNonChildTodos), Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
-    private void setOnClickListener(List<Todo> todos, List<Integer> toDosNameParentIndex) {
+    private void setOnClickListener(List<Todo> todosData) {
 
-        listener = (v, position) -> findToDosChild(todos, position, toDosNameParentIndex);
+        listener = (v, position) -> findToDosChild(todosData, position);
 
     }
 

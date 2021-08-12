@@ -1,4 +1,4 @@
-package com.example.projects;
+package com.example.projects.ProjectsRecyclerView;
 
 import android.view.View;
 import android.widget.TextView;
@@ -6,12 +6,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecyclerViewHeaven extends RecyclerView.ViewHolder implements View.OnClickListener {
+import com.example.projects.ProjectsRecyclerView.ProjectAdapter;
+import com.example.projects.R;
+
+public class ProjectViewHeaven extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     TextView projectNameTextView;
-    private RecyclerAdapter.RecyclerViewClickListener listener;
+    private ProjectAdapter.RecyclerViewClickListener listener;
 
-    public RecyclerViewHeaven(@NonNull View itemView, RecyclerAdapter.RecyclerViewClickListener listener) {
+    public ProjectViewHeaven(@NonNull View itemView, ProjectAdapter.RecyclerViewClickListener listener) {
         super(itemView);
         projectNameTextView = itemView.findViewById(R.id.project_name_text_view);
         itemView.setOnClickListener(this);

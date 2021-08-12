@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
 import com.example.projects.APIProjects.Project;
+import com.example.projects.ProjectsRecyclerView.ProjectAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView projectsRecyclerView;
     private APIInterface apiInterface;
     private List<String> projectsNameList;
-    private RecyclerAdapter.RecyclerViewClickListener listener;
+    private ProjectAdapter.RecyclerViewClickListener listener;
     private ProgressDialog loadingProgressDialog;
 
     @Override
@@ -74,12 +75,9 @@ public class MainActivity extends AppCompatActivity {
             public void onNext(@NonNull List<Project> projects) {
                 Log.d(TAG, Constants.ON_NEXT);
                 loadingProgressDialog.dismiss();
-                for (Project project : projects) {
-                    projectsNameList.add(project.getName());
-                }
 
                 setOnClickListener(projects);
-                RecyclerAdapter adapter = new RecyclerAdapter(MainActivity.this, projectsNameList, listener);
+                ProjectAdapter adapter = new ProjectAdapter(MainActivity.this, projects, listener);
                 projectsRecyclerView.setAdapter(adapter);
             }
 
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(MainActivity.this, projectsRecyclerView,
                             Constants.PROJECTS_RECYCLER_VIEW);
-            intent.putExtra(Constants.ID_PROJECT, projects.get(position).getId());
+            intent.putExtra(Constants.PROJECT, projects.get(position));
             MainActivity.this.startActivity(intent, optionsCompat.toBundle());
         };
     }

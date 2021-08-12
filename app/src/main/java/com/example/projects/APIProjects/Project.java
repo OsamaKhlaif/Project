@@ -5,9 +5,11 @@ import javax.annotation.Generated;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Generated("net.hexar.json2pojo")
 @SuppressWarnings("unused")
-public class Project {
+public class Project implements Serializable {
 
     @SerializedName("id")
     private String id;

@@ -4,8 +4,8 @@ public class Constants {
 
     public static final String ID_PROJECT_LINK = "projects";
     public static final String ID_TO_DOS_ALL_LINK = "todo";
-    public static final String ID_PROJECT = "idProject";
-    public static final String TODO_CHILD_ATTRIBUTES_REFERENCE = "TodoChildAttributes";
+    public static final String PROJECT = "Project";
+    public static final String TODOS_ACTIVITY = "TodoActivity";
     public static final String BASE_URL = "https://eae8f09b1670.ngrok.io";
     public static final String ON_SUBSCRIBE = "Start the subscribe";
     public static final String ON_COMPLETE = "Finish the Process";
@@ -14,5 +14,6 @@ public class Constants {
     public static final String PROJECTS_RECYCLER_VIEW = "projectsRecyclerView";
     public static final String TODOS_RECYCLER_VIEW = "todosRecyclerView";
     public static final String TODO_PARENT = "0";
+
 
 }
