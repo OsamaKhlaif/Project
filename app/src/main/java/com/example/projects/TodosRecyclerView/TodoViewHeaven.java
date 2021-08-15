@@ -11,7 +11,7 @@ import com.example.projects.R;
 public class TodoViewHeaven extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     TextView todoNameTextView;
-    private TodoAdapter.RecyclerViewClickListener listener;
+    private final TodoAdapter.RecyclerViewClickListener listener;
 
     public TodoViewHeaven(@NonNull View itemView, TodoAdapter.RecyclerViewClickListener listener) {
         super(itemView);

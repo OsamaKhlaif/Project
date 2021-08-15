@@ -1,11 +1,10 @@
-
 package com.example.projects.APIProjects;
-
-import javax.annotation.Generated;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+
+import javax.annotation.Generated;
 
 @Generated("net.hexar.json2pojo")
 @SuppressWarnings("unused")

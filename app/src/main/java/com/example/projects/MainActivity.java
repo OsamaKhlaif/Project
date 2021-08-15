@@ -20,7 +20,6 @@ import com.example.projects.API.APIInterface;
 import com.example.projects.APIProjects.Project;
 import com.example.projects.ProjectsRecyclerView.ProjectAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -35,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView projectsRecyclerView;
     private APIInterface apiInterface;
-    private List<String> projectsNameList;
     private ProjectAdapter.RecyclerViewClickListener listener;
     private ProgressDialog loadingProgressDialog;
 
@@ -53,17 +51,14 @@ public class MainActivity extends AppCompatActivity {
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
-        findProjectName();
+        getProjectName();
     }
 
-    private void findProjectName() {
-
-        projectsNameList = new ArrayList<>();
+    private void getProjectName() {
         apiInterface = APIClient.getClient().create(APIInterface.class);
         Observable<List<Project>> apiCall = apiInterface.getProjects(Constants.ID_PROJECT_LINK)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-
 
         apiCall.subscribe(new Observer<List<Project>>() {
             @Override
@@ -75,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
             public void onNext(@NonNull List<Project> projects) {
                 Log.d(TAG, Constants.ON_NEXT);
                 loadingProgressDialog.dismiss();
-
                 setOnClickListener(projects);
                 ProjectAdapter adapter = new ProjectAdapter(MainActivity.this, projects, listener);
                 projectsRecyclerView.setAdapter(adapter);
@@ -119,14 +113,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refreshProjects(View view) {
-
         loadingProgressDialog = new ProgressDialog(this);
         loadingProgressDialog.setTitle(R.string.Loading);
         loadingProgressDialog.setMessage(getResources().getString(R.string.textProjectLoading));
         // disable dismiss by tapping outside of the dialog
         loadingProgressDialog.setCancelable(false);
         loadingProgressDialog.show();
-        findProjectName();
+        getProjectName();
     }
 
 }

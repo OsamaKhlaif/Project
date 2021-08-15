@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +21,6 @@ import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
 import com.example.projects.TodosRecyclerView.TodoAdapter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +37,6 @@ public class TodosActivity extends AppCompatActivity {
     private RecyclerView todosRecyclerView;
     private TextView titleTodosActivityTextView;
     private APIInterface apiInterface;
-    private List<String> todosParentNameList;
-    private List<Integer> todosParentIndexList;
-    private List<String> todosChildNameList;
-    private List<Integer> todosChildIndexList;
     private Project project;
     private TodoAdapter.RecyclerViewClickListener listener;
     private ProgressDialog loadingProgressDialog;
@@ -67,29 +61,24 @@ public class TodosActivity extends AppCompatActivity {
         intent = getIntent();
         project = (Project) intent.getSerializableExtra(Constants.PROJECT);
         todosRecyclerView = findViewById(R.id.to_dos_recycler_view);
-        titleTodosActivityTextView = findViewById(R.id.title_todos_text_view);
         todosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        todosParentIndexList = new ArrayList<>();
+        titleTodosActivityTextView = findViewById(R.id.title_todos_text_view);
 
         if (intent.getSerializableExtra(Constants.TODOS_ACTIVITY) == null) {
-            findToDos();
-            titleTodosActivityTextView.setText(project.getName());
+            getToDos();
         } else {
             todosRecyclerView.removeAllViews();
             todosAttributes = (TodosAttributes) intent.getSerializableExtra(Constants.TODOS_ACTIVITY);
             todosData = todosAttributes.getTodosData();
             setAdapter(todosAttributes.getTodosParentData());
             project = todosAttributes.getProject();
-            titleTodosActivityTextView.setText(project.getName());
         }
+        titleTodosActivityTextView.setText(project.getName());
 
     }
 
-    private void findToDos() {
-
-        todosParentNameList = new ArrayList<>();
+    private void getToDos() {
         apiInterface = APIClient.getClient().create(APIInterface.class);
-
         Observable<List<Todo>> apiCall = apiInterface.getTodos(Constants.ID_TO_DOS_ALL_LINK)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -151,7 +140,7 @@ public class TodosActivity extends AppCompatActivity {
 
     }
 
-    private void findToDosChild(List<Todo> todosParentData, int position) {
+    private void getToDosChild(List<Todo> todosParentData, int position) {
         todosParentData = todosData.getChildTodos(todosParentData.get(position));
 
         if (!todosParentData.isEmpty()) {
@@ -164,12 +153,11 @@ public class TodosActivity extends AppCompatActivity {
             Toast.makeText(this, getResources().getString(R.string.todoNonChildTodos), Toast.LENGTH_SHORT).show();
         }
 
-
     }
 
     private void setOnClickListener(List<Todo> todosData) {
 
-        listener = (v, position) -> findToDosChild(todosData, position);
+        listener = (v, position) -> getToDosChild(todosData, position);
 
     }
 

@@ -15,9 +15,9 @@ import java.util.List;
 
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectViewHeaven> {
 
-    private Context context;
-    private List<Project> projects;
-    private RecyclerViewClickListener listener;
+    private final Context context;
+    private final List<Project> projects;
+    private final RecyclerViewClickListener listener;
 
     public ProjectAdapter(Context context, List<Project> projects, RecyclerViewClickListener listener) {
         this.context = context;

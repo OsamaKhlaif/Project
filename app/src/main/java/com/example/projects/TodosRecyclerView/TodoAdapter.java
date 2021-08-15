@@ -11,19 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projects.APIProjects.Todo;
 import com.example.projects.R;
-import com.example.projects.TodosRecyclerView.TodoViewHeaven;
 
 import java.util.List;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHeaven> {
 
-    private Context context;
-    private List<Todo> todosList;
-    private RecyclerViewClickListener listener;
+    private final Context context;
+    private final List<Todo> todosList;
+    private final RecyclerViewClickListener listener;
 
     public TodoAdapter(Context context, List<Todo> todosList, RecyclerViewClickListener listener) {
         this.context = context;
-        this.todosList= todosList;
+        this.todosList = todosList;
         this.listener = listener;
     }
 
@@ -36,12 +35,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHeaven> {
 
     @Override
     public void onBindViewHolder(@NonNull TodoViewHeaven holder, int position) {
-        Log.d(">>>","--"+todosList.get(position).getName());
-            holder.todoNameTextView.setText(todosList.get(position).getName());
-
+        holder.todoNameTextView.setText(todosList.get(position).getName());
     }
-
-
 
     @Override
     public int getItemCount() {
