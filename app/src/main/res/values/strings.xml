@@ -8,5 +8,11 @@
     <string name="to_do">To Dos</string>
     <string name="error">"Error: "</string>
     <string name="todoNonChildTodos">"This todo haven't any child todos"</string>
+    <string name="tab_text_1">Todos</string>
+    <string name="tab_text_2">Info</string>
+    <string name="todosNameInfo">"Name: "</string>
+    <string name="startDateTodo">"\nStart Date: "</string>
+    <string name="dueDate">"\nDue Date: "</string>
+    <string name="statusTodo">"\nStatus: "</string>
 
 </resources>

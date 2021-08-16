@@ -18,6 +18,12 @@ public class Todo implements Serializable {
     private String parent;
     @SerializedName("project_id")
     private String projectId;
+    @SerializedName("start_date")
+    private String startDate;
+    @SerializedName("due_date")
+    private String dueDate;
+    @SerializedName("status")
+    private String status;
 
     public String getId() {
         return id;
@@ -51,4 +57,27 @@ public class Todo implements Serializable {
         projectId = parentId;
     }
 
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
