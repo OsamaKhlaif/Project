@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/todos_activity_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/todos_activity_constraint_layout"
     tools:context=".TodosActivity">
 
     <include
@@ -17,13 +17,12 @@
 
 
     <FrameLayout
-        android:id="@+id/frame_layout"
+        android:id="@+id/todos_list_fragment_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="720dp"
         android:layout_below="@+id/include"
         android:layout_marginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include" />
-
 
 </RelativeLayout>

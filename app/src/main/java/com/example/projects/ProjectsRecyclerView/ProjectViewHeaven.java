@@ -10,8 +10,8 @@ import com.example.projects.R;
 
 public class ProjectViewHeaven extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    TextView projectNameTextView;
     private final ProjectAdapter.RecyclerViewClickListener listener;
+    TextView projectNameTextView;
 
     public ProjectViewHeaven(@NonNull View itemView, ProjectAdapter.RecyclerViewClickListener listener) {
         super(itemView);

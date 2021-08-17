@@ -40,14 +40,14 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
         return fragment;
     }
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return context.getResources().getString(TAB_TITLES[position]);
-    }
+   @Nullable
+   @Override
+   public CharSequence getPageTitle(int position) {
+       return context.getResources().getString(TAB_TITLES[position]);
+   }
 
     @Override
     public int getCount() {
-        return 2;
+        return TAB_TITLES.length;
     }
 }

@@ -109,13 +109,17 @@ public class TodoListFragment extends Fragment {
             public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                 loadingProgressDialog.dismiss();
                 boolean connected;
-                ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                ConnectivityManager connectivityManager = (ConnectivityManager) getActivity()
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
                 //we are connected to a network
-                connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
+                connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+                        .getState() == NetworkInfo.State.CONNECTED ||
+                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                                .getState() == NetworkInfo.State.CONNECTED;
 
                 if (!connected) {
-                    Toast.makeText(getContext(), getResources().getString(R.string.error) + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.error)
+                            + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), getResources().getString(R.string.error) + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -138,7 +142,8 @@ public class TodoListFragment extends Fragment {
             todosRecyclerView.setAdapter(adapter);
         } else {
             Intent intent = new Intent(getActivity(), MainActivity.class);
-            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), todosRecyclerView, Constants.TODOS_RECYCLER_VIEW);
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(getActivity(), todosRecyclerView, Constants.TODOS_RECYCLER_VIEW);
             startActivity(intent, optionsCompat.toBundle());
             Toast.makeText(getContext(), R.string.projectNonTodos, Toast.LENGTH_LONG).show();
         }

@@ -20,7 +20,9 @@ public class TodosData implements Serializable {
         todoList = new ArrayList<>();
 
         for (Todo todo : allTodos) {
-            if (todo.getProjectId().equals(project.getId()) && todo.getParent().equals(Constants.TODO_PARENT)) {
+            if (todo.getProjectId().equals(project.getId()) && todo.getParent()
+                    .equals(Constants.TODO_PARENT)) {
+
                 todoList.add(todo);
             }
         }

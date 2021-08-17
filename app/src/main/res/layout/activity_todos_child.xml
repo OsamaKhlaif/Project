@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#6BFBE6"
-        app:tabTextColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/include"
+        app:tabTextColor="@color/black"
         tools:layout_editor_absoluteX="16dp" />
 
     <androidx.viewpager.widget.ViewPager
@@ -28,7 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="657dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_todos_child_tab_layout">
-    </androidx.viewpager.widget.ViewPager>
+        app:layout_constraintTop_toBottomOf="@+id/activity_todos_child_tab_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

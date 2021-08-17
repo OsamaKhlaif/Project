@@ -32,9 +32,8 @@ public class TodosActivity extends AppCompatActivity {
         todoListFragment.setArguments(bundle);
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.frame_layout, todoListFragment).commit();
+                .add(R.id.todos_list_fragment_frame_layout, todoListFragment).commit();
 
     }
-
 
 }

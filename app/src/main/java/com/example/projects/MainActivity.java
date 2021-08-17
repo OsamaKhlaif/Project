@@ -81,11 +81,14 @@ public class MainActivity extends AppCompatActivity {
                 boolean connected;
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 //we are connected to a network
-                connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED;
+                connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+                        .getState() == NetworkInfo.State.CONNECTED ||
+                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                                .getState() == NetworkInfo.State.CONNECTED;
 
                 if (!connected) {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error)
+                            + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + e.getMessage(), Toast.LENGTH_LONG).show();
                 }

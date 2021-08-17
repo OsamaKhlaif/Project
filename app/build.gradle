@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.android.material:material:1.0.0'//add new
     implementation 'com.google.code.gson:gson:2.8.7'//add new
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'//edit
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'//edit

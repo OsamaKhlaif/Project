@@ -11,6 +11,7 @@ import com.example.projects.R;
 public class InfoViewHeaven extends RecyclerView.ViewHolder {
 
     TextView infoTodoTextView;
+
     public InfoViewHeaven(@NonNull View itemView) {
         super(itemView);
         infoTodoTextView = itemView.findViewById(R.id.info_todo_text_view);
