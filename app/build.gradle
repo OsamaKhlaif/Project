@@ -29,6 +29,9 @@ android {
 }
 
 dependencies {
+    implementation 'com.makeramen:roundedimageview:2.3.0'//latest version
+    implementation 'com.squareup.picasso:picasso:2.71828'//edit
+//
     implementation 'com.google.android.material:material:1.5.0-alpha02'
     implementation 'com.google.code.gson:gson:2.8.7'//add new
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'//edit

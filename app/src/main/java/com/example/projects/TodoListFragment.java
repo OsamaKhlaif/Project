@@ -52,6 +52,15 @@ public class TodoListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+        if (savedInstanceState != null) {
+
+            boolean isVisible = savedInstanceState.getBoolean("reply_visible");
+
+            if (isVisible) {
+                todosRecyclerView.setVisibility(View.VISIBLE);
+            }
+        }
+
         View view = inflater.inflate(R.layout.todo_list_fragment, container, false);
 
         loadingProgressDialog = new ProgressDialog(getContext());
@@ -173,5 +182,14 @@ public class TodoListFragment extends Fragment {
 
         listener = (v, position) -> getToDosChild(todosData, position);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(@androidx.annotation.NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (todosRecyclerView.getVisibility() == View.VISIBLE) {
+            outState.putBoolean("reply_visible", true);
+        }
     }
 }

@@ -34,6 +34,10 @@ public class TodosChildActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.activity_todos_child_tab_layout);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_fact_check_24);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_info_24);
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.black));
+        tabLayout.setTabIconTintResource(R.color.black);
 
         titleTodosActivityTextView.setText(todosAttributes.getProject().getName());
 

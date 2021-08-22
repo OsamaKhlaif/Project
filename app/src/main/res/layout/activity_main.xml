@@ -17,14 +17,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/projects_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="720dp"
-            android:padding="10dp" />
+            android:layout_height="720dp" />
 
     </androidx.core.widget.NestedScrollView>
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="300dp"
         android:fitsSystemWindows="true"
         app:liftOnScroll="true">
 
@@ -32,7 +31,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-
             app:title="Projects"
             app:expandedTitleTextAppearance="@style/TitleTextStyle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
@@ -44,14 +42,13 @@
                 android:id="@+id/image_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 android:src="@drawable/project" />
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@android:color/transparent"
-                app:titleTextAppearance="@style/TitleTextStyle"
                 />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

@@ -5,10 +5,8 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginTop="10dp"
-    android:background="@drawable/info_todos_backgrounds"
-    android:foreground="?attr/selectableItemBackground"
-    >
+    android:layout_margin="10dp"
+    android:background="@drawable/info_todos_backgrounds">
 
     <TextView
         android:id="@+id/info_todo_text_view"

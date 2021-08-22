@@ -23,6 +23,15 @@ public class InfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
+        if (savedInstanceState != null) {
+
+            boolean isVisible = savedInstanceState.getBoolean("reply_visible");
+
+            if (isVisible) {
+                infoRecyclerView.setVisibility(View.VISIBLE);
+            }
+        }
+        
         View view = inflater.inflate(R.layout.info_fragment, container, false);
         infoRecyclerView = view.findViewById(R.id.info_recycler_view);
         infoRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
@@ -32,5 +41,14 @@ public class InfoFragment extends Fragment {
         infoRecyclerView.setAdapter(infoAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@androidx.annotation.NonNull @io.reactivex.annotations.NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (infoRecyclerView.getVisibility() == View.VISIBLE) {
+            outState.putBoolean("reply_visible", true);
+        }
     }
 }

@@ -15,10 +15,12 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.example.projects.API.APIClient;
 import com.example.projects.API.APIInterface;
 import com.example.projects.APIProjects.Project;
 import com.example.projects.ProjectsRecyclerView.ProjectAdapter;
+
 
 import java.util.List;
 
@@ -41,6 +43,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState != null) {
+
+            boolean isVisible = savedInstanceState.getBoolean("reply_visible");
+
+            if (isVisible) {
+                projectsRecyclerView.setVisibility(View.VISIBLE);
+            }
+        }
 
         loadingProgressDialog = new ProgressDialog(this);
         loadingProgressDialog.setTitle(R.string.Loading);
@@ -125,4 +136,12 @@ public class MainActivity extends AppCompatActivity {
         getProjectName();
     }
 
+    @Override
+    protected void onSaveInstanceState(@androidx.annotation.NonNull @NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (projectsRecyclerView.getVisibility() == View.VISIBLE) {
+            outState.putBoolean("reply_visible", true);
+        }
+    }
 }

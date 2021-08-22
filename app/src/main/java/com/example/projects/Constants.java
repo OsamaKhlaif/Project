@@ -7,7 +7,7 @@ public class Constants {
     public static final String PROJECT = "Project";
     public static final String TODOS_ACTIVITY = "TodoActivity";
     public static final String TODOS_CHILD_ACTIVITY = "TodoChildActivity";
-    public static final String BASE_URL = "https://69ead366d550.ngrok.io";
+    public static final String BASE_URL = "https://ed16-185-114-120-44.ngrok.io";
     public static final String ON_SUBSCRIBE = "Start the subscribe";
     public static final String ON_COMPLETE = "Finish the Process";
     public static final String ON_ERROR = "ERROR: ";
