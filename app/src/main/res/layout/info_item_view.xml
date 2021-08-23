@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:layout_margin="10dp"
-    android:background="@drawable/info_todos_backgrounds">
+    android:layout_margin="10dp">
 
     <TextView
         android:id="@+id/info_todo_text_view"
@@ -17,6 +16,7 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/info_todos_backgrounds" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

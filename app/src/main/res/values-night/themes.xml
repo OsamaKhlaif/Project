@@ -3,7 +3,7 @@
     <style name="Theme.Projects" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#1b87e5</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimaryVariant">#005bb2</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#81d4fa</item>
@@ -22,6 +22,7 @@
         <item name="fontFamily">@font/jacques_francois</item>
         <item name="backgroundColor">#1b87e5</item>
     </style>
+
 
 
 </resources>

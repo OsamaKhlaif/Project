@@ -5,13 +5,13 @@
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
-    android:layout_margin="10dp"
-    android:background="@drawable/text_view_projects_name">
+    android:layout_margin="10dp">
 
     <TextView
         android:id="@+id/project_name_text_view"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        style="@style/ShapeAppearance.App.MediumComponent"
         android:fontFamily="@font/jacques_francois"
         android:gravity="center_horizontal"
         android:paddingTop="13dp"
@@ -20,6 +20,9 @@
         android:textColor="@color/black"
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/text_view_projects_name"/>
+
+
 
 </RelativeLayout>
