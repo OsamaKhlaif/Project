@@ -1,19 +1,18 @@
 package com.example.projects.APIProjects;
 
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-import javax.annotation.Generated;
 
-@Generated("net.hexar.json2pojo")
-@SuppressWarnings("unused")
 public class Project implements Serializable {
 
-    @SerializedName("id")
     private String id;
-    @SerializedName("name")
     private String name;
+
+    public Project(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public String getId() {
         return id;

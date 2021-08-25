@@ -1,29 +1,30 @@
 package com.example.projects.APIProjects;
 
-import com.google.gson.annotations.SerializedName;
+
+import com.google.firebase.database.DataSnapshot;
 
 import java.io.Serializable;
 
-import javax.annotation.Generated;
-
-@Generated("net.hexar.json2pojo")
-@SuppressWarnings("unused")
 public class Todo implements Serializable {
 
-    @SerializedName("id")
     private String id;
-    @SerializedName("name")
     private String name;
-    @SerializedName("parent")
     private String parent;
-    @SerializedName("project_id")
     private String projectId;
-    @SerializedName("start_date")
     private String startDate;
-    @SerializedName("due_date")
     private String dueDate;
-    @SerializedName("status")
     private String status;
+
+    public Todo(DataSnapshot dataSnapshot) {
+        this.id = String.valueOf(dataSnapshot.child("id").getValue());
+        this.name = String.valueOf(dataSnapshot.child("name").getValue());
+        this.parent = String.valueOf(dataSnapshot.child("parent").getValue());
+        this.projectId = String.valueOf(dataSnapshot.child("project_id").getValue());
+        this.startDate = String.valueOf(dataSnapshot.child("start_date").getValue());
+        this.dueDate = String.valueOf(dataSnapshot.child("due_date").getValue());
+        this.status = String.valueOf(dataSnapshot.child("status").getValue());
+    }
+
 
     public String getId() {
         return id;

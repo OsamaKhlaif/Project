@@ -9,49 +9,36 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-
-import com.example.projects.API.APIClient;
-import com.example.projects.API.APIInterface;
 import com.example.projects.APIProjects.Project;
 import com.example.projects.ProjectsRecyclerView.ProjectAdapter;
-
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView projectsRecyclerView;
-    private APIInterface apiInterface;
     private ProjectAdapter.RecyclerViewClickListener listener;
     private ProgressDialog loadingProgressDialog;
+    private List<Project> projectsList;
+    private Project project;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
+    private int projectPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState != null) {
-
-            boolean isVisible = savedInstanceState.getBoolean("reply_visible");
-
-            if (isVisible) {
-                projectsRecyclerView.setVisibility(View.VISIBLE);
-            }
-        }
 
         loadingProgressDialog = new ProgressDialog(this);
         loadingProgressDialog.setTitle(R.string.Loading);
@@ -62,32 +49,38 @@ public class MainActivity extends AppCompatActivity {
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
+
         getProjectName();
     }
 
     private void getProjectName() {
-        apiInterface = APIClient.getClient().create(APIInterface.class);
-        Observable<List<Project>> apiCall = apiInterface.getProjects(Constants.ID_PROJECT_LINK)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
 
-        apiCall.subscribe(new Observer<List<Project>>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                Log.d(TAG, Constants.ON_SUBSCRIBE);
-            }
+        projectPosition = 0;
+        projectsList = new ArrayList<>();
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("projects");
 
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onNext(@NonNull List<Project> projects) {
-                Log.d(TAG, Constants.ON_NEXT);
-                loadingProgressDialog.dismiss();
-                setOnClickListener(projects);
-                ProjectAdapter adapter = new ProjectAdapter(MainActivity.this, projects, listener);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                while(dataSnapshot.hasChild(String.valueOf(projectPosition))) {
+                    String idProject = String.valueOf(dataSnapshot.child(String.valueOf(projectPosition)).child("id").getValue());
+                    String nameProjects = String.valueOf(dataSnapshot.child(String.valueOf(projectPosition)).child("name").getValue());
+                   project = new Project(idProject, nameProjects);
+                   projectsList.add(project);
+                    projectPosition++;
+                }
+                setOnClickListener(projectsList);
+                ProjectAdapter adapter = new ProjectAdapter(MainActivity.this, projectsList, listener);
                 projectsRecyclerView.setAdapter(adapter);
+                loadingProgressDialog.dismiss();
             }
 
             @Override
-            public void onError(@NonNull Throwable e) {
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
                 loadingProgressDialog.dismiss();
                 boolean connected;
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -101,17 +94,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.error)
                             + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + error.getMessage(), Toast.LENGTH_LONG).show();
                 }
-                Log.d(TAG, Constants.ON_ERROR + e);
-            }
-
-            @Override
-            public void onComplete() {
-                Log.d(TAG, Constants.ON_COMPLETE);
+                Log.d(TAG, Constants.ON_ERROR + error.getMessage());
             }
         });
-
     }
 
     private void setOnClickListener(List<Project> projects) {
@@ -136,12 +123,4 @@ public class MainActivity extends AppCompatActivity {
         getProjectName();
     }
 
-    @Override
-    protected void onSaveInstanceState(@androidx.annotation.NonNull @NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if (projectsRecyclerView.getVisibility() == View.VISIBLE) {
-            outState.putBoolean("reply_visible", true);
-        }
-    }
 }
