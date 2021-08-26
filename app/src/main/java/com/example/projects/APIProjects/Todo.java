@@ -1,7 +1,9 @@
 package com.example.projects.APIProjects;
 
 
+import com.example.projects.Constants;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
 
@@ -15,14 +17,14 @@ public class Todo implements Serializable {
     private String dueDate;
     private String status;
 
-    public Todo(DataSnapshot dataSnapshot) {
-        this.id = String.valueOf(dataSnapshot.child("id").getValue());
-        this.name = String.valueOf(dataSnapshot.child("name").getValue());
-        this.parent = String.valueOf(dataSnapshot.child("parent").getValue());
-        this.projectId = String.valueOf(dataSnapshot.child("project_id").getValue());
-        this.startDate = String.valueOf(dataSnapshot.child("start_date").getValue());
-        this.dueDate = String.valueOf(dataSnapshot.child("due_date").getValue());
-        this.status = String.valueOf(dataSnapshot.child("status").getValue());
+    public Todo(QueryDocumentSnapshot document) {
+        this.id = String.valueOf(document.get(Constants.ID));
+        this.name = String.valueOf(document.get(Constants.NAME));
+        this.parent = String.valueOf(document.get(Constants.PARENT_TODO));
+        this.projectId = String.valueOf(document.get(Constants.PROJECT_ID));
+        this.startDate = String.valueOf(document.get(Constants.START_DATE));
+        this.dueDate = String.valueOf(document.get(Constants.DUE_DATE));
+        this.status = String.valueOf(document.get(Constants.STATUS));
     }
 
 

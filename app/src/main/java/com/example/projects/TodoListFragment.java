@@ -1,36 +1,34 @@
 package com.example.projects;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
 import com.example.projects.TodosRecyclerView.TodoAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TodoListFragment extends Fragment {
 
     private static final String TAG = TodosActivity.class.getSimpleName();
+    private FirebaseFirestore db;
     private RecyclerView todosRecyclerView;
     private Project project;
     private TodoAdapter.RecyclerViewClickListener listener;
@@ -40,9 +38,6 @@ public class TodoListFragment extends Fragment {
     private TodosAttributes todosAttributes;
     private String positionCome;
     private Todo todo;
-    private FirebaseDatabase database;
-    private DatabaseReference myRef;
-    private int projectPosition;
 
     @Nullable
     @Override
@@ -75,51 +70,31 @@ public class TodoListFragment extends Fragment {
             setAdapter(todosAttributes.getTodosParentData());
             project = todosAttributes.getProject();
         }
-
         return view;
     }
 
     private void getToDos() {
 
-        projectPosition = 0;
+        db = FirebaseFirestore.getInstance();
         todoList = new ArrayList<>();
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("todo");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                while(dataSnapshot.hasChild(String.valueOf(projectPosition))) {
-                    todo = new Todo(dataSnapshot.child(String.valueOf(projectPosition)));
-                    todoList.add(todo);
-                    todosData = new TodosData(todoList);
-                    projectPosition++;
-                }
-                todoList = todosData.getParentTodos(project);
-                setOnClickListener(todoList);
-                setAdapter(todoList);
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                loadingProgressDialog.dismiss();
-                boolean connected;
-                ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-                //we are connected to a network
-                connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-                        .getState() == NetworkInfo.State.CONNECTED ||
-                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-                                .getState() == NetworkInfo.State.CONNECTED;
-                if (!connected) {
-                    Toast.makeText(getContext(), getResources().getString(R.string.error)
-                            + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.error) + error.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                Log.d(TAG, Constants.ON_ERROR + error.getMessage());
-            }
-        });
+
+        db.collection(Constants.TODO_REFERENCE)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            todo = new Todo(document);
+                            todoList.add(todo);
+                            todosData = new TodosData(todoList);
+                        }
+                        todoList = todosData.getParentTodos(project);
+                        setOnClickListener(todoList);
+                        setAdapter(todoList);
+
+                    } else {
+                        Log.w(TAG, Constants.ERROR, task.getException());
+                    }
+                });
     }
 
     public void setAdapter(List<Todo> todosParentData) {
@@ -136,7 +111,6 @@ public class TodoListFragment extends Fragment {
             startActivity(intent, optionsCompat.toBundle());
             Toast.makeText(getContext(), R.string.projectNonTodos, Toast.LENGTH_LONG).show();
         }
-
     }
 
     private void getToDosChild(List<Todo> todosParentData, int position) {
@@ -155,13 +129,10 @@ public class TodoListFragment extends Fragment {
         } else {
             Toast.makeText(getContext(), getResources().getString(R.string.todoNonChildTodos), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void setOnClickListener(List<Todo> todosData) {
-
         listener = (v, position) -> getToDosChild(todosData, position);
-
     }
 
 }

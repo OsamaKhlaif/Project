@@ -1,25 +1,21 @@
 package com.example.projects;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projects.APIProjects.Project;
 import com.example.projects.ProjectsRecyclerView.ProjectAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog loadingProgressDialog;
     private List<Project> projectsList;
     private Project project;
-    private FirebaseDatabase database;
-    private DatabaseReference myRef;
-    private int projectPosition;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,50 +49,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void getProjectName() {
 
-        projectPosition = 0;
+        db = FirebaseFirestore.getInstance();
         projectsList = new ArrayList<>();
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("projects");
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                while(dataSnapshot.hasChild(String.valueOf(projectPosition))) {
-                    String idProject = String.valueOf(dataSnapshot.child(String.valueOf(projectPosition)).child("id").getValue());
-                    String nameProjects = String.valueOf(dataSnapshot.child(String.valueOf(projectPosition)).child("name").getValue());
-                   project = new Project(idProject, nameProjects);
-                   projectsList.add(project);
-                    projectPosition++;
-                }
-                setOnClickListener(projectsList);
-                ProjectAdapter adapter = new ProjectAdapter(MainActivity.this, projectsList, listener);
-                projectsRecyclerView.setAdapter(adapter);
-                loadingProgressDialog.dismiss();
-            }
+        db.collection(Constants.PROJECT_REFERENCE)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String idProject = String.valueOf(document.get(Constants.ID));
+                            String nameProjects = String.valueOf(document.get(Constants.NAME));
+                            project = new Project(idProject, nameProjects);
+                            projectsList.add(project);
+                        }
+                        setOnClickListener(projectsList);
+                        ProjectAdapter adapter = new ProjectAdapter(MainActivity.this, projectsList, listener);
+                        projectsRecyclerView.setAdapter(adapter);
+                        loadingProgressDialog.dismiss();
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                loadingProgressDialog.dismiss();
-                boolean connected;
-                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                //we are connected to a network
-                connected = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-                        .getState() == NetworkInfo.State.CONNECTED ||
-                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-                                .getState() == NetworkInfo.State.CONNECTED;
-
-                if (!connected) {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error)
-                            + R.string.internetConnectionMessage, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.error) + error.getMessage(), Toast.LENGTH_LONG).show();
-                }
-                Log.d(TAG, Constants.ON_ERROR + error.getMessage());
-            }
-        });
+                    } else {
+                        Log.w(TAG, Constants.ERROR, task.getException());
+                    }
+                });
     }
 
     private void setOnClickListener(List<Project> projects) {
