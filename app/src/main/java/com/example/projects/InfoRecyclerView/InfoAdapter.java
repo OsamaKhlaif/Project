@@ -32,10 +32,10 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoViewHeaven> {
 
     @Override
     public void onBindViewHolder(@NonNull InfoViewHeaven holder, int position) {
-        holder.infoTodoTextView.setText(context.getString(R.string.todosNameInfo)
-                + todosList.get(position).getName() + context.getString(R.string.startDateTodo)
-                + todosList.get(position).getStartDate() + context.getString(R.string.dueDate)
-                + todosList.get(position).getDueDate() + context.getString(R.string.statusTodo)
+        holder.infoTodoTextView.setText(context.getString(R.string.todosName)
+                + todosList.get(position).getName() + "\n" + context.getString(R.string.startDateTodo)
+                + todosList.get(position).getStartDate() +"\n" + context.getString(R.string.dueDateTodo)
+                + todosList.get(position).getDueDate() + "\n" + context.getString(R.string.statusTodo)
                 + todosList.get(position).getStatus());
     }
 

@@ -11,11 +11,13 @@ public class TodosAttributes implements Serializable {
     private Project project;
     private List<Todo> todosParentData;
     private TodosData todosData;
+    private String id;
 
-    public TodosAttributes(Project project, List<Todo> todosParentData, TodosData todosData) {
+    public TodosAttributes(Project project, List<Todo> todosParentData, TodosData todosData, String id) {
         this.project = project;
         this.todosParentData = todosParentData;
         this.todosData = todosData;
+        this.id = id;
     }
 
     public Project getProject() {
@@ -40,5 +42,13 @@ public class TodosAttributes implements Serializable {
 
     public void setTodosData(TodosData todosData) {
         this.todosData = todosData;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

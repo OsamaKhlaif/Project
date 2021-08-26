@@ -1,5 +1,7 @@
 package com.example.projects;
 
+import android.util.Log;
+
 import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
 
@@ -33,6 +35,17 @@ public class TodosData implements Serializable {
         todoList = new ArrayList<>();
         for (Todo todoChild : allTodos) {
             if (todoChild.getParent().equals(todo.getId())) {
+                todoList.add(todoChild);
+            }
+        }
+        return todoList;
+    }
+
+    public List<Todo> refresh(String id){
+
+        todoList = new ArrayList<>();
+        for (Todo todoChild : allTodos) {
+            if (todoChild.getParent().equals(id)) {
                 todoList.add(todoChild);
             }
         }
