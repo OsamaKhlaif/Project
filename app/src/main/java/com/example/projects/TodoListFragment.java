@@ -1,5 +1,7 @@
 package com.example.projects;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,11 +23,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
+import com.example.projects.InfoRecyclerView.InfoAdapter;
 import com.example.projects.TodosRecyclerView.TodoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,10 +57,10 @@ public class TodoListFragment extends Fragment {
     private String positionCome;
     private Todo todo;
     private String idParentTodo;
-    private EditText idTodoEditText, nameTodoEditText, startDateEditText, dueDateEditText, statusEditText;
-    private TextView idTodoTextView, nameTodoTextView, startDateTextView, dueDateTextView, statusTextView;
     private FloatingActionButton addTodoFabButton;
     private Context context;
+    private AddTaskDialog addTaskDialog;
+    private String id;
 
     @Nullable
     @Override
@@ -63,22 +69,7 @@ public class TodoListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.todo_list_fragment, container, false);
 
-        context = getContext();
-        idTodoEditText = new EditText(context);
-        idTodoTextView = new TextView(context);
-        idTodoTextView.setText("\n\n"+context.getResources().getString(R.string.idTodo));
-        nameTodoEditText = new EditText(context);
-        nameTodoTextView = new TextView(context);
-        nameTodoTextView.setText(context.getResources().getString(R.string.todosName));
-        startDateEditText = new EditText(context);
-        startDateTextView = new TextView(context);
-        startDateTextView.setText(context.getResources().getString(R.string.startDateTodo));
-        dueDateEditText = new EditText(context);
-        dueDateTextView = new TextView(context);
-        dueDateTextView.setText(context.getResources().getString(R.string.dueDateTodo));
-        statusEditText = new EditText(context);
-        statusTextView = new TextView(context);
-        statusTextView.setText(context.getResources().getString(R.string.statusTodo));
+        context = view.getContext();
 
         loadingProgressDialog = new ProgressDialog(getContext());
         loadingProgressDialog.setTitle(R.string.Loading);
@@ -100,6 +91,7 @@ public class TodoListFragment extends Fragment {
             idParentTodo = "0";
             getToDos();
         } else {
+
             positionCome = Constants.TODOS_CHILD_ACTIVITY;
             todosRecyclerView.removeAllViews();
             todosAttributes = (TodosAttributes) getArguments().getSerializable(Constants.TODOS_CHILD_ACTIVITY);
@@ -111,7 +103,7 @@ public class TodoListFragment extends Fragment {
         }
 
         addTodoFabButton.setOnClickListener(v -> {
-            showDialog();
+            showDialog(view.getContext());
         });
 
         return view;
@@ -141,26 +133,27 @@ public class TodoListFragment extends Fragment {
 
     public void setAdapter(List<Todo> todosParentData) {
         loadingProgressDialog.dismiss();
+        setOnClickListener(todosParentData);
+        TodoAdapter adapter = new TodoAdapter(getContext(), todosParentData, listener);
+        todosRecyclerView.setAdapter(adapter);
 
-        if (!todosParentData.isEmpty()) {
-            setOnClickListener(todosParentData);
-            TodoAdapter adapter = new TodoAdapter(getContext(), todosParentData, listener);
-            todosRecyclerView.setAdapter(adapter);
-        } else {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(getActivity(), todosRecyclerView, Constants.TODOS_RECYCLER_VIEW);
-            startActivity(intent, optionsCompat.toBundle());
-            Toast.makeText(getContext(), R.string.projectNonTodos, Toast.LENGTH_LONG).show();
-        }
     }
 
     private void getToDosChild(List<Todo> todosParentData, int position) {
-        String id = todosParentData.get(position).getId();
+         id = todosParentData.get(position).getId();
+         todoList = new ArrayList<>();
+        db.collection(Constants.TODO_REFERENCE)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            todo = new Todo(document);
+                            todoList.add(todo);
+                            todosData = new TodosData(todoList);
+                        }
+        todoList = todosData.getChildTodos(todosParentData.get(position));
 
-        todosParentData = todosData.getChildTodos(todosParentData.get(position));
-        if (!todosParentData.isEmpty()) {
-            todosAttributes = new TodosAttributes(project, todosParentData, todosData, id);
+            todosAttributes = new TodosAttributes(project, todoList, todosData, id);
 
             Intent intent = new Intent(getActivity(), TodosChildActivity.class);
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
@@ -169,9 +162,11 @@ public class TodoListFragment extends Fragment {
             intent.putExtra(Constants.TODOS_ACTIVITY, todosAttributes);
             startActivity(intent, optionsCompat.toBundle());
 
-        } else {
-            Toast.makeText(getContext(), getResources().getString(R.string.todoNonChildTodos), Toast.LENGTH_SHORT).show();
-        }
+
+                    } else {
+                        Log.w(TAG, Constants.ERROR, task.getException());
+                    }
+                });
     }
 
     private void setOnClickListener(List<Todo> todosData) {
@@ -179,46 +174,21 @@ public class TodoListFragment extends Fragment {
 
     }
 
-    private void showDialog() {
-        LinearLayout dialogLinearLayout = new LinearLayout(context);
-        dialogLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        dialogLinearLayout.setPadding(20,0,0,0);
-        dialogLinearLayout.addView(idTodoTextView);
-        dialogLinearLayout.addView(idTodoEditText);
-        dialogLinearLayout.addView(nameTodoTextView);
-        dialogLinearLayout.addView(nameTodoEditText);
-        dialogLinearLayout.addView(startDateTextView);
-        dialogLinearLayout.addView(startDateEditText);
-        dialogLinearLayout.addView(dueDateTextView);
-        dialogLinearLayout.addView(dueDateEditText);
-        dialogLinearLayout.addView(statusTextView);
-        dialogLinearLayout.addView(statusEditText);
-
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("Add a new task")
-                .setView(dialogLinearLayout)
-                .setIcon(R.drawable.ic_baseline_add_circle_24)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        addNewTodo();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create();
-        dialog.show();
+    private void showDialog(Context context) {
+        addTaskDialog = new AddTaskDialog(getActivity());
+        addTaskDialog.show();
     }
 
     public void addNewTodo(){
         //Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
-        user.put(Constants.ID, idTodoEditText.getText().toString());
-        user.put(Constants.NAME, nameTodoEditText.getText().toString());
+        user.put(Constants.ID, addTaskDialog.idTodoEditText.getText().toString());
+        user.put(Constants.NAME, addTaskDialog.nameTodoEditText.getText().toString());
         user.put(Constants.PARENT_TODO, idParentTodo);
         user.put(Constants.PROJECT_ID, project.getId());
-        user.put(Constants.START_DATE,startDateEditText.getText().toString());
-        user.put(Constants.DUE_DATE,dueDateEditText.getText().toString());
-        user.put(Constants.STATUS,dueDateEditText.getText().toString());
+        user.put(Constants.START_DATE,addTaskDialog.startDateEditText.getText().toString());
+        user.put(Constants.DUE_DATE,addTaskDialog.dueDateEditText.getText().toString());
+        user.put(Constants.STATUS,addTaskDialog.statusEditText.getText().toString());
 
         //Add a new document with a generated ID
         db.collection("todo")
@@ -240,11 +210,76 @@ public class TodoListFragment extends Fragment {
                                 todoList.add(todo);
                                 todosData = new TodosData(todoList);
                             }
+                            todosAttributes = new TodosAttributes(project, todoList, todosData, id);
                             setAdapter(todosData.refresh(idParentTodo));
                         } else {
                             Log.w(TAG, Constants.ERROR, task.getException());
                         }
                     });
+
         }
+
+    }
+
+
+    //AddTaskDialog class
+    public class AddTaskDialog extends Dialog implements View.OnClickListener {
+
+        private Activity activity;
+        public EditText idTodoEditText, nameTodoEditText, startDateEditText, dueDateEditText, statusEditText;
+        private TextView idTodoTextView, nameTodoTextView, startDateTextView, dueDateTextView, statusTextView;
+        public Button add,cancel;
+        TodoListFragment fragment;
+
+
+        public AddTaskDialog(@NonNull Activity activity) {
+            super(activity);
+            this.activity = activity;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.activity_add_task_dialog);
+
+            fragment = new TodoListFragment();
+            idTodoTextView = findViewById(R.id.todo_id_text_view);
+            idTodoEditText = findViewById(R.id.todo_id_edit_text);
+            nameTodoTextView = findViewById(R.id.todo_name_text_view);
+            nameTodoEditText = findViewById(R.id.todo_name_edit_text);
+            startDateTextView = findViewById(R.id.start_date_text_view);
+            startDateEditText = findViewById(R.id.start_date_edit_text);
+            dueDateTextView = findViewById(R.id.due_date_text_view);
+            dueDateEditText = findViewById(R.id.due_date_edit_text);
+            statusTextView = findViewById(R.id.status_text_view);
+            statusEditText = findViewById(R.id.status_edit_text);
+            add = findViewById(R.id.add_button);
+            cancel = findViewById(R.id.cancel_button);
+            add.setOnClickListener(this);
+            cancel.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.add_button:
+                    addNewTodo();
+                    dismiss();
+                    break;
+
+                case R.id.cancel_button:
+                    dismiss();
+                    break;
+
+                default:
+                    break;
+            }
+            dismiss();
+
+        }
+
+
     }
 }
