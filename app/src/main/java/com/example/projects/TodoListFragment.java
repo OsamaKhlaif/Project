@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,29 +11,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projects.APIProjects.Project;
 import com.example.projects.APIProjects.Todo;
-import com.example.projects.InfoRecyclerView.InfoAdapter;
 import com.example.projects.TodosRecyclerView.TodoAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -58,7 +53,6 @@ public class TodoListFragment extends Fragment {
     private Todo todo;
     private String idParentTodo;
     private FloatingActionButton addTodoFabButton;
-    private Context context;
     private AddTaskDialog addTaskDialog;
     private String id;
 
@@ -69,7 +63,6 @@ public class TodoListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.todo_list_fragment, container, false);
 
-        context = view.getContext();
 
         loadingProgressDialog = new ProgressDialog(getContext());
         loadingProgressDialog.setTitle(R.string.Loading);
@@ -140,8 +133,8 @@ public class TodoListFragment extends Fragment {
     }
 
     private void getToDosChild(List<Todo> todosParentData, int position) {
-         id = todosParentData.get(position).getId();
-         todoList = new ArrayList<>();
+        id = todosParentData.get(position).getId();
+        todoList = new ArrayList<>();
         db.collection(Constants.TODO_REFERENCE)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -151,16 +144,16 @@ public class TodoListFragment extends Fragment {
                             todoList.add(todo);
                             todosData = new TodosData(todoList);
                         }
-        todoList = todosData.getChildTodos(todosParentData.get(position));
+                        todoList = todosData.getChildTodos(todosParentData.get(position));
 
-            todosAttributes = new TodosAttributes(project, todoList, todosData, id);
+                        todosAttributes = new TodosAttributes(project, todoList, todosData, id);
 
-            Intent intent = new Intent(getActivity(), TodosChildActivity.class);
-            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(getActivity(), todosRecyclerView,
-                            Constants.TODOS_RECYCLER_VIEW);
-            intent.putExtra(Constants.TODOS_ACTIVITY, todosAttributes);
-            startActivity(intent, optionsCompat.toBundle());
+                        Intent intent = new Intent(getActivity(), TodosChildActivity.class);
+                        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
+                                .makeSceneTransitionAnimation(getActivity(), todosRecyclerView,
+                                        Constants.TODOS_RECYCLER_VIEW);
+                        intent.putExtra(Constants.TODOS_ACTIVITY, todosAttributes);
+                        startActivity(intent, optionsCompat.toBundle());
 
 
                     } else {
@@ -176,24 +169,26 @@ public class TodoListFragment extends Fragment {
 
     private void showDialog(Context context) {
         addTaskDialog = new AddTaskDialog(getActivity());
+        addTaskDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        addTaskDialog.setCancelable(false);
         addTaskDialog.show();
     }
 
-    public void addNewTodo(){
+    public void addNewTodo() {
         //Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
         user.put(Constants.ID, addTaskDialog.idTodoEditText.getText().toString());
         user.put(Constants.NAME, addTaskDialog.nameTodoEditText.getText().toString());
         user.put(Constants.PARENT_TODO, idParentTodo);
         user.put(Constants.PROJECT_ID, project.getId());
-        user.put(Constants.START_DATE,addTaskDialog.startDateEditText.getText().toString());
-        user.put(Constants.DUE_DATE,addTaskDialog.dueDateEditText.getText().toString());
-        user.put(Constants.STATUS,addTaskDialog.statusEditText.getText().toString());
+        user.put(Constants.START_DATE, addTaskDialog.startDateEditText.getText().toString());
+        user.put(Constants.DUE_DATE, addTaskDialog.dueDateEditText.getText().toString());
+        user.put(Constants.STATUS, addTaskDialog.statusEditText.getText().toString());
 
         //Add a new document with a generated ID
         db.collection("todo")
                 .add(user)
-                .addOnSuccessListener(documentReference -> Toast.makeText(context, "Add Successful", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(documentReference -> Toast.makeText(getContext(), "Add Successful", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Log.w(TAG, e.getMessage()));
 
         if (positionCome.equals(Constants.TODOS_ACTIVITY)) {
@@ -210,26 +205,36 @@ public class TodoListFragment extends Fragment {
                                 todoList.add(todo);
                                 todosData = new TodosData(todoList);
                             }
+                            todoList = todosData.refresh(idParentTodo);
                             todosAttributes = new TodosAttributes(project, todoList, todosData, id);
                             setAdapter(todosData.refresh(idParentTodo));
+
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean(Constants.BOOLEAN, true);
+                            bundle.putSerializable(Constants.TODOS_ATTRIBUTES, todosAttributes);
+                            Fragment fragment = new InfoFragment();
+                            fragment.setArguments(bundle);
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.info_fragment, fragment);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+
                         } else {
                             Log.w(TAG, Constants.ERROR, task.getException());
                         }
                     });
-
         }
 
     }
 
-
     //AddTaskDialog class
     public class AddTaskDialog extends Dialog implements View.OnClickListener {
 
-        private Activity activity;
         public EditText idTodoEditText, nameTodoEditText, startDateEditText, dueDateEditText, statusEditText;
+        public Button add, cancel;
+        private Activity activity;
         private TextView idTodoTextView, nameTodoTextView, startDateTextView, dueDateTextView, statusTextView;
-        public Button add,cancel;
-        TodoListFragment fragment;
 
 
         public AddTaskDialog(@NonNull Activity activity) {
@@ -243,7 +248,6 @@ public class TodoListFragment extends Fragment {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.activity_add_task_dialog);
 
-            fragment = new TodoListFragment();
             idTodoTextView = findViewById(R.id.todo_id_text_view);
             idTodoEditText = findViewById(R.id.todo_id_edit_text);
             nameTodoTextView = findViewById(R.id.todo_name_text_view);
@@ -263,7 +267,7 @@ public class TodoListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.add_button:
                     addNewTodo();
                     dismiss();
@@ -279,7 +283,6 @@ public class TodoListFragment extends Fragment {
             dismiss();
 
         }
-
 
     }
 }

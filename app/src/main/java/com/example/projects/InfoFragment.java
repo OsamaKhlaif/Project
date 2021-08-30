@@ -15,6 +15,7 @@ import com.example.projects.InfoRecyclerView.InfoAdapter;
 
 public class InfoFragment extends Fragment {
 
+    Boolean bool = false;
     private TodosAttributes todosAttributes;
     private RecyclerView infoRecyclerView;
 
@@ -22,12 +23,17 @@ public class InfoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.info_fragment, container, false);
         infoRecyclerView = view.findViewById(R.id.info_recycler_view);
         infoRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        todosAttributes = (TodosAttributes) getArguments().getSerializable(Constants.TODOS_CHILD_ACTIVITY);
+        bool = getArguments().getBoolean(Constants.BOOLEAN);
+
+        if (!bool) {
+            todosAttributes = (TodosAttributes) getArguments().getSerializable(Constants.TODOS_CHILD_ACTIVITY);
+        } else {
+            todosAttributes = (TodosAttributes) getArguments().getSerializable(Constants.TODOS_ATTRIBUTES);
+        }
         InfoAdapter infoAdapter = new InfoAdapter(getContext(), todosAttributes.getTodosParentData());
         infoRecyclerView.setAdapter(infoAdapter);
 

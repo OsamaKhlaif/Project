@@ -19,5 +19,7 @@ public class Constants {
     public static final String STATUS = "status";
     public static final String TODO_REFERENCE = "todo";
     public static final String PROJECT_REFERENCE = "projects";
+    public static final String TODOS_ATTRIBUTES = "todosAttributes";
+    public static final String BOOLEAN = "boolean";
 
 }
